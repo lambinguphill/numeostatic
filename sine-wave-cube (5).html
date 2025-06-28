@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numerology Wave Interactions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b00, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        /* DOB Section */
+        .dob-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .dob-section h2 {
+            color: #ffcc00;
+            margin-bottom: 15px;
+        }
+
+        .dob-section p {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .dob-input-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .dob-field {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .dob-field label {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+
+        #dobInput {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            width: 200px;
+            cursor: pointer;
+        }
+
+        #dobInput:focus {
+            outline: none;
+            border-color: #ff6b00;
+            box-shadow: 0 0 15px rgba(255, 107, 0, 0.3);
+        }
+
+        .analyze-btn {
+            padding: 12px 30px;
+            background: #ff6b00;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .analyze-btn:hover {
+            background: #ff8c00;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.4);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ff6b00;
+            margin: 10px 0 5px;
+        }
+
+        .result-planet {
+            font-size: 14px;
+            color: #ffcc00;
+        }
+
+        .dob-numbers {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            font-size: 20px;
+        }
+
+        .dob-num {
+            background: rgba(255, 107, 0, 0.2);
+            padding: 5px 12px;
+            border-radius: 6px;
+            border: 1px solid #ff6b00;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: fit-content;
+        }
+
+        .controls-panel h3 {
+            color: #ffcc00;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .selected-display {
+            margin-bottom: 20px;
+        }
+
+        .selected-display h4 {
+            color: #ff6b00;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        #selectedList {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 40px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .selected-item {
+            background: var(--color);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .number-btn {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .number-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .number-btn.active {
+            background: var(--color);
+            border-color: var(--color);
+            box-shadow: 0 0 20px var(--color);
+        }
+
+        .planet-label {
+            font-size: 10px;
+            opacity: 0.8;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+
+        .control-slider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #ff6b00;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .slider-value {
+            min-width: 30px;
+            color: #ffcc00;
+            font-weight: bold;
+        }
+
+        .clear-btn {
+            width: 100%;
+            padding: 10px;
+            background: #ff6b00;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .clear-btn:hover {
+            background: #ff8c00;
+        }
+
+        /* Visualization Area */
+        .visualization-area {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .wave-container {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            height: 400px;
+            position: relative;
+        }
+
+        #waveCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        /* Lo Shu Grid */
+        .loshu-container {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+        }
+
+        .loshu-container h3 {
+            text-align: center;
+            color: #ffcc00;
+            margin-bottom: 20px;
+        }
+
+        .loshu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 360px;
+            margin: 0 auto;
+        }
+
+        .loshu-cell {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .loshu-cell:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .loshu-cell.active {
+            background: var(--bg-color);
+            border-color: var(--border-color);
+            box-shadow: 0 0 30px var(--glow-color);
+        }
+
+        .loshu-cell.inactive {
+            opacity: 0.4;
+        }
+
+        .loshu-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .loshu-planet {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 2px;
+        }
+
+        .loshu-count {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .loshu-cell.active .loshu-count {
+            display: block;
+        }
+
+        /* Analysis Section */
+        .analysis-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .analysis-container h3 {
+            color: #ffcc00;
+            margin-bottom: 20px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6b00;
+        }
+
+        .harmony-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .harmony-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
+            transition: width 0.5s;
+            width: 0%;
+        }
+
+        .interpretation {
+            background: rgba(255, 107, 0, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 107, 0, 0.3);
+            margin-top: 20px;
+        }
+
+        .interpretation h4 {
+            color: #ff6b00;
+            margin-bottom: 10px;
+        }
+
+        .interpretation p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .dob-input-wrapper {
+                flex-direction: column;
+            }
+            
+            #dobInput {
+                width: 100%;
+            }
+        }
+
+        /* Hidden by default */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Numerology Wave Interactions</h1>
+        <p class="subtitle">See how numbers harmonize and amplify each other through wave patterns</p>
+
+        <!-- DOB Section -->
+        <div class="dob-section">
+            <h2>Birth Date Analysis</h2>
+            <p>Calculate your Mulank (Birth Number) and Bhagyank (Destiny Number) to see your numerological wave patterns</p>
+            
+            <div class="dob-input-wrapper">
+                <div class="dob-field">
+                    <label for="dobInput">Enter Date of Birth</label>
+                    <input type="date" id="dobInput">
+                </div>
+                <button class="analyze-btn" id="analyzeBtn">Analyze</button>
+            </div>
+            
+            <div id="dobResults" class="results-grid hidden">
+                <div class="result-card">
+                    <div class="result-label">Mulank (Birth Number)</div>
+                    <div class="result-value" id="mulankValue">-</div>
+                    <div class="result-planet" id="mulankPlanet">-</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">Bhagyank (Destiny Number)</div>
+                    <div class="result-value" id="bhagyankValue">-</div>
+                    <div class="result-planet" id="bhagyankPlanet">-</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">DOB Numbers</div>
+                    <div class="dob-numbers" id="dobNumbersList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Controls Panel -->
+            <div class="controls-panel">
+                <h3>Number Selection</h3>
+                
+                <div class="selected-display">
+                    <h4>Selected Numbers</h4>
+                    <div id="selectedList">
+                        <span style="color: #666;">No numbers selected</span>
+                    </div>
+                </div>
+                
+                <div class="number-grid" id="numberGrid"></div>
+                
+                <div class="control-group">
+                    <label>Base Frequency</label>
+                    <div class="control-slider">
+                        <input type="range" id="freqSlider" min="0.5" max="3" step="0.1" value="1">
+                        <span class="slider-value" id="freqValue">1.0</span>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label>Amplitude Scale</label>
+                    <div class="control-slider">
+                        <input type="range" id="ampSlider" min="0.5" max="2" step="0.1" value="1">
+                        <span class="slider-value" id="ampValue">1.0</span>
+                    </div>
+                </div>
+                
+                <button class="clear-btn" id="clearBtn">Clear All</button>
+            </div>
+
+            <!-- Visualization Area -->
+            <div class="visualization-area">
+                <!-- Wave Display -->
+                <div class="wave-container">
+                    <canvas id="waveCanvas"></canvas>
+                </div>
+
+                <!-- Lo Shu Grid -->
+                <div class="loshu-container">
+                    <h3>Lo Shu Grid</h3>
+                    <div class="loshu-grid" id="loshuGrid"></div>
+                </div>
+
+                <!-- Analysis -->
+                <div class="analysis-container">
+                    <h3>Wave Interaction Analysis</h3>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Harmony Level</div>
+                            <div class="metric-value" id="harmonyValue">0%</div>
+                            <div class="harmony-bar">
+                                <div class="harmony-fill" id="harmonyBar"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Amplification</div>
+                            <div class="metric-value" id="amplifValue">0x</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Active Numbers</div>
+                            <div class="metric-value" id="activeValue">0</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Dominant Number</div>
+                            <div class="metric-value" id="dominantValue">-</div>
+                        </div>
+                    </div>
+                    
+                    <div id="interpretation" class="interpretation hidden">
+                        <h4>Numerological Interpretation</h4>
+                        <p id="interpretText"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let selectedNumbers = [];
+        let animationTime = 0;
+        let canvas, ctx;
+
+        // Numerology data
+        const numerologyData = [
+            { number: 1, planet: 'Sun', color: '#FFD700' },
+            { number: 2, planet: 'Moon', color: '#C0C0C0' },
+            { number: 3, planet: 'Jupiter', color: '#DAA520' },
+            { number: 4, planet: 'Rahu', color: '#4B0082' },
+            { number: 5, planet: 'Mercury', color: '#00CED1' },
+            { number: 6, planet: 'Venus', color: '#FF69B4' },
+            { number: 7, planet: 'Ketu', color: '#8B4513' },
+            { number: 8, planet: 'Saturn', color: '#4682B4' },
+            { number: 9, planet: 'Mars', color: '#DC143C' }
+        ];
+
+        // Harmony relationships
+        const harmonies = {
+            1: [1, 2, 3, 4, 5, 7, 9],
+            2: [1, 2, 3, 4, 7, 8],
+            3: [1, 2, 3, 5, 6, 9],
+            4: [1, 2, 4, 5, 6, 7, 8],
+            5: [1, 3, 4, 5, 6, 8, 9],
+            6: [3, 4, 5, 6, 8, 9],
+            7: [1, 2, 4, 5, 7, 8],
+            8: [2, 4, 5, 6, 7, 8],
+            9: [1, 3, 5, 6, 9]
+        };
+
+        // Initialize app
+        function init() {
+            canvas = document.getElementById('waveCanvas');
+            ctx = canvas.getContext('2d');
+            
+            createNumberButtons();
+            createLoShuGrid();
+            setupEventListeners();
+            resizeCanvas();
+            updateDisplay();
+            animate();
+        }
+
+        // Create number buttons
+        function createNumberButtons() {
+            const grid = document.getElementById('numberGrid');
+            
+            numerologyData.forEach(data => {
+                const btn = document.createElement('button');
+                btn.className = 'number-btn';
+                btn.style.setProperty('--color', data.color);
+                btn.innerHTML = `
+                    <span>${data.number}</span>
+                    <span class="planet-label">${data.planet}</span>
+                `;
+                btn.addEventListener('click', () => toggleNumber(data.number));
+                grid.appendChild(btn);
+            });
+        }
+
+        // Create Lo Shu Grid
+        function createLoShuGrid() {
+            const grid = document.getElementById('loshuGrid');
+            const loShuOrder = [4, 9, 2, 3, 5, 7, 8, 1, 6];
+            
+            loShuOrder.forEach(num => {
+                const data = numerologyData[num - 1];
+                const cell = document.createElement('div');
+                cell.className = 'loshu-cell';
+                cell.dataset.number = num;
+                cell.style.setProperty('--bg-color', data.color + '33');
+                cell.style.setProperty('--border-color', data.color);
+                cell.style.setProperty('--glow-color', data.color);
+                cell.innerHTML = `
+                    <div class="loshu-number">${num}</div>
+                    <div class="loshu-planet">${data.planet}</div>
+                    <div class="loshu-count">✓</div>
+                `;
+                cell.addEventListener('click', () => toggleNumber(num));
+                grid.appendChild(cell);
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('analyzeBtn').addEventListener('click', analyzeDOB);
+            document.getElementById('clearBtn').addEventListener('click', clearAll);
+            document.getElementById('freqSlider').addEventListener('input', updateSliders);
+            document.getElementById('ampSlider').addEventListener('input', updateSliders);
+            document.getElementById('dobInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') analyzeDOB();
+            });
+            window.addEventListener('resize', resizeCanvas);
+        }
+
+        // Toggle number selection
+        function toggleNumber(num) {
+            const index = selectedNumbers.indexOf(num);
+            
+            if (index > -1) {
+                selectedNumbers.splice(index, 1);
+            } else {
+                selectedNumbers.push(num);
+            }
+            
+            updateDisplay();
+        }
+
+        // Update all displays
+        function updateDisplay() {
+            updateSelectedList();
+            updateNumberButtons();
+            updateLoShuGrid();
+            updateAnalysis();
+        }
+
+        // Update selected numbers list
+        function updateSelectedList() {
+            const list = document.getElementById('selectedList');
+            
+            if (selectedNumbers.length === 0) {
+                list.innerHTML = '<span style="color: #666;">No numbers selected</span>';
+            } else {
+                list.innerHTML = selectedNumbers.map(num => {
+                    const data = numerologyData[num - 1];
+                    return `<span class="selected-item" style="--color: ${data.color}; background: ${data.color};">
+                        ${num} (${data.planet})
+                    </span>`;
+                }).join('');
+            }
+        }
+
+        // Update number buttons
+        function updateNumberButtons() {
+            const buttons = document.querySelectorAll('.number-btn');
+            buttons.forEach((btn, index) => {
+                const num = index + 1;
+                if (selectedNumbers.includes(num)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Update Lo Shu Grid
+        function updateLoShuGrid() {
+            const cells = document.querySelectorAll('.loshu-cell');
+            
+            cells.forEach(cell => {
+                const num = parseInt(cell.dataset.number);
+                const count = selectedNumbers.filter(n => n === num).length;
+                const countDisplay = cell.querySelector('.loshu-count');
+                
+                if (count > 0) {
+                    cell.classList.add('active');
+                    cell.classList.remove('inactive');
+                    countDisplay.textContent = count > 1 ? count + 'x' : '✓';
+                } else {
+                    cell.classList.remove('active');
+                    cell.classList.add('inactive');
+                }
+            });
+        }
+
+        // Update analysis
+        function updateAnalysis() {
+            const harmony = calculateHarmony();
+            const amplification = selectedNumbers.length > 0 ? 
+                (1 + (harmony / 100) * (selectedNumbers.length - 1)).toFixed(1) : 0;
+            
+            document.getElementById('harmonyValue').textContent = Math.round(harmony) + '%';
+            document.getElementById('harmonyBar').style.width = harmony + '%';
+            document.getElementById('amplifValue').textContent = amplification + 'x';
+            document.getElementById('activeValue').textContent = selectedNumbers.length;
+            
+            // Find dominant number
+            if (selectedNumbers.length > 0) {
+                let maxHarmony = 0;
+                let dominantNum = selectedNumbers[0];
+                
+                selectedNumbers.forEach(num => {
+                    let count = 0;
+                    selectedNumbers.forEach(other => {
+                        if (num !== other && harmonies[num].includes(other)) {
+                            count++;
+                        }
+                    });
+                    if (count > maxHarmony) {
+                        maxHarmony = count;
+                        dominantNum = num;
+                    }
+                });
+                
+                const data = numerologyData[dominantNum - 1];
+                const dominantEl = document.getElementById('dominantValue');
+                dominantEl.textContent = `${dominantNum} (${data.planet})`;
+                dominantEl.style.color = data.color;
+            } else {
+                document.getElementById('dominantValue').textContent = '-';
+                document.getElementById('dominantValue').style.color = '#ff6b00';
+            }
+            
+            // Update interpretation
+            updateInterpretation();
+        }
+
+        // Calculate harmony
+        function calculateHarmony() {
+            if (selectedNumbers.length < 2) return 0;
+            
+            let harmonyScore = 0;
+            let totalPairs = 0;
+            
+            for (let i = 0; i < selectedNumbers.length; i++) {
+                for (let j = i + 1; j < selectedNumbers.length; j++) {
+                    totalPairs++;
+                    const num1 = selectedNumbers[i];
+                    const num2 = selectedNumbers[j];
+                    
+                    if (harmonies[num1].includes(num2)) {
+                        harmonyScore++;
+                    }
+                }
+            }
+            
+            return totalPairs > 0 ? (harmonyScore / totalPairs) * 100 : 0;
+        }
+
+        // Update interpretation
+        function updateInterpretation() {
+            const interp = document.getElementById('interpretation');
+            const text = document.getElementById('interpretText');
+            
+            if (selectedNumbers.length < 2) {
+                interp.classList.add('hidden');
+                return;
+            }
+            
+            interp.classList.remove('hidden');
+            const harmony = calculateHarmony();
+            
+            if (harmony > 80) {
+                text.textContent = 'Excellent harmony! These numbers create powerful constructive interference, amplifying each other\'s positive qualities. This combination brings balance, success, and spiritual growth.';
+            } else if (harmony > 60) {
+                text.textContent = 'Good compatibility. These numbers work well together, creating mostly positive interactions with some areas of tension that can lead to growth.';
+            } else if (harmony > 40) {
+                text.textContent = 'Moderate interaction. These numbers have mixed compatibility - some aspects harmonize while others create challenges. Balance is key.';
+            } else {
+                text.textContent = 'Challenging combination. These numbers create significant interference patterns. While difficult, this can lead to transformation if handled wisely.';
+            }
+        }
+
+        // Update sliders
+        function updateSliders() {
+            document.getElementById('freqValue').textContent = 
+                parseFloat(document.getElementById('freqSlider').value).toFixed(1);
+            document.getElementById('ampValue').textContent = 
+                parseFloat(document.getElementById('ampSlider').value).toFixed(1);
+        }
+
+        // Clear all selections
+        function clearAll() {
+            selectedNumbers = [];
+            document.getElementById('dobInput').value = '';
+            document.getElementById('dobResults').classList.add('hidden');
+            updateDisplay();
+        }
+
+        // Reduce to single digit
+        function reduceToSingleDigit(num) {
+            while (num > 9) {
+                num = num.toString().split('').reduce((sum, d) => sum + parseInt(d), 0);
+            }
+            return num || 9;
+        }
+
+        // Analyze DOB
+        function analyzeDOB() {
+            const dobInput = document.getElementById('dobInput').value;
+            if (!dobInput) {
+                alert('Please enter a date of birth');
+                return;
+            }
+            
+            const date = new Date(dobInput);
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            
+            // Calculate Mulank and Bhagyank
+            const mulank = reduceToSingleDigit(day);
+            const fullDate = `${day}${month}${year}`;
+            const dateSum = fullDate.split('').reduce((sum, d) => sum + parseInt(d), 0);
+            const bhagyank = reduceToSingleDigit(dateSum);
+            
+            // Get unique numbers from DOB
+            const uniqueNums = new Set();
+            fullDate.split('').forEach(d => {
+                const num = parseInt(d);
+                if (num >= 1 && num <= 9) uniqueNums.add(num);
+            });
+            uniqueNums.add(mulank);
+            uniqueNums.add(bhagyank);
+            
+            // Display results
+            document.getElementById('dobResults').classList.remove('hidden');
+            document.getElementById('mulankValue').textContent = mulank;
+            document.getElementById('mulankPlanet').textContent = numerologyData[mulank - 1].planet;
+            document.getElementById('bhagyankValue').textContent = bhagyank;
+            document.getElementById('bhagyankPlanet').textContent = numerologyData[bhagyank - 1].planet;
+            
+            const dobNumsList = document.getElementById('dobNumbersList');
+            dobNumsList.innerHTML = Array.from(uniqueNums).sort().map(num =>
+                `<span class="dob-num">${num}</span>`
+            ).join('');
+            
+            // Auto-select numbers
+            selectedNumbers = Array.from(uniqueNums);
+            if (mulank === bhagyank) {
+                selectedNumbers.push(mulank); // Add twice for emphasis
+            }
+            
+            updateDisplay();
+            
+            // Scroll to visualization
+            setTimeout(() => {
+                document.querySelector('.wave-container').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }, 300);
+        }
+
+        // Resize canvas
+        function resizeCanvas() {
+            if (!canvas) return;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width - 40;
+            canvas.height = rect.height - 40;
+        }
+
+        // Draw waves
+        function drawWaves() {
+            if (!ctx) return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw grid
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.lineWidth = 1;
+            
+            for (let x = 0; x < canvas.width; x += 40) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            for (let y = 0; y < canvas.height; y += 40) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            const baseFreq = parseFloat(document.getElementById('freqSlider').value);
+            const ampScale = parseFloat(document.getElementById('ampSlider').value);
+            
+            // Draw individual waves
+            selectedNumbers.forEach((num, idx) => {
+                const data = numerologyData[num - 1];
+                ctx.strokeStyle = data.color;
+                ctx.lineWidth = 2;
+                ctx.globalAlpha = 0.5;
+                ctx.beginPath();
+                
+                for (let x = 0; x < canvas.width; x++) {
+                    const normalX = x / canvas.width * 4 * Math.PI;
+                    const y = canvas.height / 2 + 
+                             Math.sin(num * baseFreq * normalX + animationTime) * 30 * ampScale;
+                    
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                
+                ctx.stroke();
+            });
+            
+            // Draw combined wave
+            if (selectedNumbers.length > 1) {
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 3;
+                ctx.globalAlpha = 1;
+                ctx.beginPath();
+                
+                for (let x = 0; x < canvas.width; x++) {
+                    const normalX = x / canvas.width * 4 * Math.PI;
+                    let y = canvas.height / 2;
+                    
+                    selectedNumbers.forEach(num => {
+                        y += Math.sin(num * baseFreq * normalX + animationTime) * 30 * ampScale;
+                    });
+                    
+                    y /= Math.sqrt(selectedNumbers.length);
+                    
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                
+                ctx.stroke();
+            }
+            
+            ctx.globalAlpha = 1;
+        }
+
+        // Animation loop
+        function animate() {
+            animationTime += 0.02;
+            drawWaves();
+            requestAnimationFrame(animate);
+        }
+
+        // Start app when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>
